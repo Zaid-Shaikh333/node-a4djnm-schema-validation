@@ -3,7 +3,7 @@
 console.log(`Hello Node.js v${process.versions.node}!`);
 
 let Ajv = require('ajv');
-let ajv = new Ajv();
+let ajv = new Ajv({ allErrors: true });
 
 const schema = {
   type: 'object',
@@ -50,10 +50,12 @@ const payload = {
   country_code: '+91',
 };
 
+let validator;
 function schemaValidation(schema, payload) {
-  return ajv.validate(schema, payload);
+  validator = ajv.compile(schema);
+  return validator(payload);
 }
 
 const result = schemaValidation(schema, payload);
-
+if (!result) console.log(validator.errors);
 console.log(result);
